@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Hesap Makinesi – Merkez & Dairesel</title>
+<style>
+/* ---------- TEMA ---------- */
+:root{--bg:#000;--btn-num:#333;--btn-fn:#a6a6a6;--btn-op:#f1a33c;--text-dark:#000;--text-light:#fff;--transition:.45s cubic-bezier(.4,0,.2,1)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;color:var(--text-light);overflow:hidden}
+.wrapper{position:relative;width:100%;max-width:320px;height:620px;perspective:1200px}
+.view{position:absolute;inset:0;background:var(--bg);border-radius:20px;overflow:hidden;transition:transform var(--transition),opacity var(--transition);will-change:transform,opacity}
+.view.off-right{transform:translateX(120%);opacity:0;pointer-events:none}
+.view.off-left{transform:translateX(-120%);opacity:0;pointer-events:none}
+.view.active{transform:translateX(0);opacity:1}
+
+/* ---------- ORTAK EKRAN ---------- */
+.display{height:80px;display:flex;align-items:flex-end;justify-content:flex-end;padding:0 20px;font-size:60px;font-weight:300;text-align:right;overflow:hidden}
+
+/* ---------- ANA HESAP TUŞLARI (sadece ana ekranda) ---------- */
+.buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:8px 20px 20px 20px}
+.button{height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:400;cursor:pointer;transition:filter .1s}
+.button:active{filter:brightness(1.3)}
+.number,.decimal{background:var(--btn-num);color:var(--text-light)}
+.operator{background:var(--btn-op);color:var(--text-dark)}
+.function{background:var(--btn-fn);color:var(--text-dark)}
+.equals{background:var(--btn-op);color:var(--text-dark)}
+.zero{grid-column:span 2;border-radius:35px;padding-left:28px;justify-content:flex-start}
+
+/* ---------- MOD ÇIKIŞ & TEMİZLE ---------- */
+.mode-exit,.clear-btn{position:absolute;top:20px;height:40px;padding:0 16px;border-radius:20px;font-size:16px;font-weight:500;background:var(--btn-fn);color:var(--text-dark);z-index:10;border:none;cursor:pointer}
+.mode-exit{left:20px}
+.clear-btn{right:20px}
+
+/* ---------- FORMLAR ---------- */
+form.inner-form{display:flex;flex-direction:column;gap:14px;padding:80px 20px 20px 20px}
+.inner-form label{font-size:14px;font-weight:500;margin-bottom:4px}
+.inner-form input{width:100%;padding:12px 14px;border-radius:12px;border:none;font-size:20px;font-weight:500;text-align:center;background:#1c1c1e;color:var(--text-light)}
+.inner-form input:focus{outline:none;box-shadow:0 0 0 3px var(--btn-op)}
+.result-card{background:var(--btn-op);color:var(--text-dark);padding:14px;border-radius:14px;text-align:center;font-size:22px;font-weight:600;margin-top:10px}
+.result-card.small{font-size:14px;font-weight:400;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- ===== 1) ANA HESAP MAKİNESİ ===== -->
+  <div id="calc-view" class="view active">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <div class="button function" data-action="clear">AC</div>
+      <div class="button function" data-action="backspace">⌫</div>
+      <div class="button function" data-action="sign">+/-</div>
+      <div class="button operator" data-action="divide">÷</div>
+
+      <div class="button number" data-num="7">7</div>
+      <div class="button number" data-num="8">8</div>
+      <div class="button number" data-num="9">9</div>
+      <div class="button operator" data-action="multiply">×</div>
+
+      <div class="button number" data-num="4">4</div>
+      <div class="button number" data-num="5">5</div>
+      <div class="button number" data-num="6">6</div>
+      <div class="button operator" data-action="subtract">−</div>
+
+      <div class="button number" data-num="1">1</div>
+      <div class="button number" data-num="2">2</div>
+      <div class="button number" data-num="3">3</div>
+      <div class="button operator" data-action="add">+</div>
+
+      <div class="button number zero" data-num="0">0</div>
+      <div class="button decimal" data-action="decimal">.</div>
+      <div class="button equals" data-action="equals">=</div>
+    </div>
+
+    <!-- Mod geçiş butonları (ana ekranda) -->
+    <div class="buttons" style="padding-top:0">
+      <div class="button function" id="open-merkez">Merkez</div>
+      <div class="button function" id="open-dairesel">Dairesel</div>
+    </div>
+  </div>
+
+  <!-- ===== 2) MERKEZ MODU ===== -->
+  <div id="merkez-view" class="view off-right">
+    <button class="mode-exit" id="close-merkez">← Hesap Makinesi</button>
+    <button class="clear-btn" id="merkez-temizle">Temizle</button>
+    <form class="inner-form" onsubmit="return false">
+      <label>Tam Çap (mm)</label>
+      <input type="number" id="tam-cap" placeholder="0" step="any">
+      <label>Merkez Ölçüsü (mm)</label>
+      <input type="number" id="merkez-olcusu" placeholder="0" step="any">
+      <div class="result-card">
+        <div style="font-size:14px;font-weight:400;margin-bottom:4px">Sonuç (mm)</div>
+        <span id="merkez-sonuc">-</span>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===== 3) DAİRESEL MODU ===== -->
+  <div id="dairesel-view" class="view off-right">
+    <button class="mode-exit" id="close-dairesel">← Hesap Makinesi</button>
+    <button class="clear-btn" id="dairesel-temizle">Temizle</button>
+    <form class="inner-form" onsubmit="return false">
+      <label>Delik Sayısı</label>
+      <input type="number" id="hole-count" value="3" min="2">
+      <label>Merkezden Uzaklık (mm)</label>
+      <input type="number" id="pcd-radius" value="12">
+      <label>Delik Çapı (mm)</label>
+      <input type="number" id="hole-diameter" value="2.80" step="any">
+
+      <div class="result-card">
+        <div class="small">Merkezden Merkeze</div>
+        <span id="center-to-center">20.78 mm</span>
+      </div>
+      <div class="result-card">
+        <div class="small">Dıştan Dışa</div>
+        <span id="outer-distance">26.38 mm</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ---------- VIEW KONTROL ---------- */
+const views={
+  calc:document.getElementById('calc-view'),
+  merkez:document.getElementById('merkez-view'),
+  dairesel:document.getElementById('dairesel-view')
+};
+function goTo(target){
+  Object.values(views).forEach(v=>v.classList.remove('active','off-left','off-right'));
+  if(target==='calc'){views.calc.classList.add('active');views.merkez.classList.add('off-right');views.dairesel.classList.add('off-right');}
+  if(target==='merkez'){views.calc.classList.add('off-left');views.merkez.classList.add('active');views.dairesel.classList.add('off-right');}
+  if(target==='dairesel'){views.calc.classList.add('off-left');views.dairesel.classList.add('active');views.merkez.classList.add('off-right');}
+}
+document.getElementById('open-merkez').onclick=()=>goTo('merkez');
+document.getElementById('open-dairesel').onclick=()=>goTo('dairesel');
+document.getElementById('close-merkez').onclick=()=>goTo('calc');
+document.getElementById('close-dairesel').onclick=()=>goTo('calc');
+
+/* ---------- ANA HESAP MAKİNESİ (sadece ana ekrada) ---------- */
+class CalcEngine{
+  constructor(displayEl){
+    this.displayEl=displayEl;this.current='0';this.previous=null;this.operation=null;this.resetScreen=false;this.update();
+  }
+  update(){
+    if(this.current==='Error'){this.displayEl.textContent='Error';return;}
+    let[int,dec]=this.current.split('.');int=int.replace(/\B(?=(\d{3})+(?!\d))/g,',');this.displayEl.textContent=dec?int+'.'+dec:int;
+  }
+  clear(){this.current='0';this.previous=this.operation=null;this.resetScreen=false;this.update();}
+  sign(){this.current=(parseFloat(this.current)*-1).toString();this.update();}
+  backspace(){
+    if(this.current==='Error'){this.clear();return;}
+    if(this.resetScreen){this.current='0';this.resetScreen=false;}
+    else if(this.current.length===1||(this.current.length===2&&this.current.startsWith('-')))this.current='0';
+    else this.current=this.current.slice(0,-1);this.update();
+  }
+  append(n){
+    if(this.resetScreen){this.current=n;this.resetScreen=false;}
+    else this.current=this.current==='0'?n:this.current+n;this.update();
+  }
+  decimal(){
+    if(this.resetScreen){this.current='0.';this.resetScreen=false;}
+    else if(!this.current.includes('.'))this.current+='.';this.update();
+  }
+  chooseOp(op){
+    if(this.operation&&!this.resetScreen)this.calculate();
+    this.previous=this.current;this.operation=op;this.resetScreen=true;
+  }
+  calculate(){
+    if(!this.operation||this.previous===null)return;
+    const prev=parseFloat(this.previous),cur=parseFloat(this.current);
+    if(isNaN(prev)||isNaN(cur))return;
+    let result;
+    switch(this.operation){
+      case'add':result=prev+cur;break;
+      case'subtract':result=prev-cur;break;
+      case'multiply':result=prev*cur;break;
+      case'divide':if(cur===0){this.current='Error';this.update();return;}result=prev/cur;break;
+      default:return;
+    }
+    result=Math.round(result*1e12)/1e12;this.current=result.toString();this.operation=this.previous=null;this.resetScreen=true;this.update();
+  }
+}
+const mainDisplay=document.getElementById('display');
+const mainCalc=new CalcEngine(mainDisplay);
+
+/* ---------- ANA TUŞLAR (delegate) ---------- */
+document.getElementById('calc-view').addEventListener('click',e=>{
+  const btn=e.target.closest('.button');
+  if(!btn)return;
+  const action=btn.dataset.action,num=btn.dataset.num;
+  if(num!==undefined)mainCalc.append(num);
+  else switch(action){
+    case'clear':mainCalc.clear();break;
+    case'backspace':mainCalc.backspace();break;
+    case'sign':mainCalc.sign();break;
+    case'decimal':mainCalc.decimal();break;
+    case'add':case'subtract':case'multiply':case'divide':mainCalc.chooseOp(action);break;
+    case'equals':mainCalc.calculate();break;
+  }
+});
+
+/* ---------- MERKEZ HESABI & TEMİZLE ---------- */
+function merkezHesap(){
+  const tam=parseFloat(document.getElementById('tam-cap').value);
+  const merk=parseFloat(document.getElementById('merkez-olcusu').value);
+  const sonucEl=document.getElementById('merkez-sonuc');
+  if(isNaN(tam)||isNaN(merk)){sonucEl.textContent='-';return;}
+  sonucEl.textContent=(merk-tam/2).toFixed(2);
+}
+document.getElementById('tam-cap').addEventListener('input',merkezHesap);
+document.getElementById('merkez-olcusu').addEventListener('input',merkezHesap);
+document.getElementById('merkez-temizle').onclick=()=>{
+  document.getElementById('tam-cap').value='';
+  document.getElementById('merkez-olcusu').value='';
+  document.getElementById('merkez-sonuc').textContent='-';
+  document.getElementById('tam-cap').focus();
+};
+
+/* ---------- DAİRESEL HESABI & TEMİZLE ---------- */
+function daireselHesap(){
+  const count=parseFloat(document.getElementById('hole-count').value);
+  const radius=parseFloat(document.getElementById('pcd-radius').value);
+  const diam=parseFloat(document.getElementById('hole-diameter').value);
+  const c2c=document.getElementById('center-to-center');
+  const od=document.getElementById('outer-distance');
+  if(isNaN(count)||isNaN(radius)||isNaN(diam)||count<2){c2c.textContent='---';od.textContent='---';return;}
+  const angleRad=(180/count)*(Math.PI/180);
+  const center2=2*radius*Math.sin(angleRad);
+  const out=center2+diam;
+  c2c.textContent=center2.toFixed(2)+' mm';
+  od.textContent=out.toFixed(2)+' mm';
+}
+['hole-count','pcd-radius','hole-diameter'].forEach(id=>document.getElementById(id).addEventListener('input',daireselHesap));
+document.getElementById('dairesel-temizle').onclick=()=>{
+  document.getElementById('hole-count').value='';
+  document.getElementById('pcd-radius').value='';
+  document.getElementById('hole-diameter').value='';
+  daireselHesap();
+  document.getElementById('hole-count').focus();
+};
+</script>
+</body>
+</html>
