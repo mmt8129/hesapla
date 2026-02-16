@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4a90e2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png" type="image/png">
 <title>Hesap Makinesi – Merkez & Dairesel</title>
 <style>
 /* ---------- TEMA (GÜNDÜZ MODU) ---------- */
@@ -365,6 +370,14 @@ document.getElementById('dairesel-temizle').onclick=()=>{
   document.getElementById('hole-count').value=''; document.getElementById('pcd-radius').value=''; document.getElementById('hole-diameter').value='';
   daireselHesap();
 };
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker Kayıtlı', reg))
+      .catch(err => console.log('Hata:', err));
+  });
+}
 </script>
 </body>
 </html>
