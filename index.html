@@ -133,7 +133,7 @@ body {
 }
 
 .mode-header {
-    padding: 20px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -142,13 +142,26 @@ body {
 
 .mode-title { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: column; overflow-y: auto; flex: 1; }
+form.inner-form {
+    padding: 15px 20px;
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+}
 
-.inner-form label { font-weight: 700; font-size: 13px; color: var(--text-main); text-transform: uppercase; }
+.inner-form label {
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-main);
+    text-transform: uppercase;
+    margin-bottom: -8px;
+}
 
-.inner-form input[type="number"] {
+.inner-form > input[type="number"] {
     width: 100%;
-    padding: 15px;
+    padding: 12px;
     border: 2px solid var(--primary);
     border-radius: 12px;
     font-size: 18px;
@@ -161,7 +174,7 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
 .result-card {
     background: var(--primary);
     color: #fff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 16px;
     text-align: center;
     box-shadow: 0 6px 15px rgba(74, 144, 226, 0.3);
@@ -171,41 +184,41 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
     background: var(--primary);
     color: #fff;
     border: none;
-    padding: 10px 15px;
+    padding: 8px 12px;
     border-radius: 10px;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 20px;
     box-shadow: 0 3px 0 #357abd;
 }
 
-/* ===== RADIO STYLES (HER İKİ MOD İÇİN ORTAK) ===== */
+/* ===== RADIO STYLES (KOMPAKT) ===== */
 .radio-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 6px;
     align-items: center;
 }
 
 .radio-option {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
     transition: background 0.2s;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px;
     color: var(--text-main);
 }
 
 .radio-option:hover { background: #f0f0f0; }
 
 .radio-dot {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 3px solid #ccc;
+    border: 2.5px solid #ccc;
     display: inline-block;
     flex-shrink: 0;
     transition: border-color 0.2s, background 0.2s;
@@ -225,47 +238,43 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: #fff;
 }
 
-.custom-input-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 4px;
-}
-
-.custom-input-wrap input[type="number"] {
-    width: 60px !important;
-    padding: 8px 4px !important;
-    font-size: 16px !important;
-    text-align: center !important;
-    border: 2px solid var(--secondary) !important;
-    border-radius: 8px !important;
-    font-weight: 700 !important;
-    background: #f5f5f5 !important;
-    color: var(--text-sub) !important;
+/* Özel input - Özel yazısının hemen yanında */
+.radio-custom-input {
+    width: 55px;
+    padding: 6px 4px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid var(--secondary);
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: var(--text-sub);
     -moz-appearance: textfield;
+    margin-left: 2px;
+    vertical-align: middle;
 }
 
-.custom-input-wrap input[type="number"]::-webkit-outer-spin-button,
-.custom-input-wrap input[type="number"]::-webkit-inner-spin-button {
+.radio-custom-input::-webkit-outer-spin-button,
+.radio-custom-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-.custom-input-wrap input[type="number"]:disabled {
-    opacity: 0.4;
+.radio-custom-input:disabled {
+    opacity: 0.3;
     cursor: not-allowed;
 }
 
-.custom-input-wrap input[type="number"]:not(:disabled) {
-    background: #fff !important;
-    border-color: var(--primary) !important;
-    color: var(--text-main) !important;
+.radio-custom-input:not(:disabled) {
+    background: #fff;
+    border-color: var(--primary);
+    color: var(--text-main);
     opacity: 1;
 }
 </style>
@@ -309,10 +318,10 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
     </div>
   </div>
 
-  <!-- ===== MERKEZ VIEW (DEĞİŞTİRİLDİ) ===== -->
+  <!-- ===== MERKEZ VIEW ===== -->
   <div id="merkez-view" class="view off-right">
     <div class="mode-header">
-        <button class="nav-btn" id="close-merkez"><span style="font-size: 22px;">👈</span></button>
+        <button class="nav-btn" id="close-merkez"><span style="font-size: 20px;">👈</span></button>
         <div class="mode-title">Merkez Mesafe</div>
         <button class="nav-btn" id="merkez-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
     </div>
@@ -345,24 +354,22 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
           <span class="radio-dot"></span> 3/8"
         </label>
         <label class="radio-option">
-          <input type="radio" name="tam-cap" value="3.2" data-label="3,2">
+          <input type="radio" name="tam-cap" value="3.2">
           <span class="radio-dot"></span> 3,2
         </label>
         <label class="radio-option">
           <input type="radio" name="tam-cap" value="custom">
           <span class="radio-dot"></span> Özel
+          <input type="number" id="tam-cap-custom" class="radio-custom-input" placeholder="0" step="any" inputmode="decimal" disabled>
         </label>
-      </div>
-      <div class="custom-input-wrap">
-        <input type="number" id="tam-cap-custom" placeholder="0" step="any" inputmode="decimal" disabled>
       </div>
 
       <label>Merkez Ölçüsü (mm)</label>
       <input type="number" id="merkez-olcusu" placeholder="0" step="any" inputmode="decimal">
 
       <div class="result-card">
-        <div style="font-size:12px; margin-bottom:5px">HESAPLANAN SONUÇ</div>
-        <span id="merkez-sonuc" style="font-size:32px; font-weight:800">-</span>
+        <div style="font-size:11px; margin-bottom:4px">HESAPLANAN SONUÇ</div>
+        <span id="merkez-sonuc" style="font-size:30px; font-weight:800">-</span>
       </div>
     </form>
   </div>
@@ -370,7 +377,7 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
   <!-- ===== DAİRESEL VIEW ===== -->
   <div id="dairesel-view" class="view off-right">
     <div class="mode-header">
-        <button class="nav-btn" id="close-dairesel"><span style="font-size: 22px;">👈</span></button>
+        <button class="nav-btn" id="close-dairesel"><span style="font-size: 20px;">👈</span></button>
         <div class="mode-title">Dairesel Mesafe</div>
         <button class="nav-btn" id="dairesel-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
     </div>
@@ -389,10 +396,8 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
         <label class="radio-option">
           <input type="radio" name="hole-count" value="custom">
           <span class="radio-dot"></span> Özel
+          <input type="number" id="hole-count-custom" class="radio-custom-input" placeholder="0" min="2" inputmode="numeric" disabled>
         </label>
-      </div>
-      <div class="custom-input-wrap">
-        <input type="number" id="hole-count-custom" placeholder="0" min="2" inputmode="numeric" disabled>
       </div>
 
       <label>Merkezden Uzaklık (R) (mm)</label>
@@ -427,19 +432,17 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
         <label class="radio-option">
           <input type="radio" name="hole-diam" value="custom">
           <span class="radio-dot"></span> Özel
+          <input type="number" id="hole-diam-custom" class="radio-custom-input" placeholder="0" step="any" inputmode="decimal" disabled>
         </label>
-      </div>
-      <div class="custom-input-wrap">
-        <input type="number" id="hole-diam-custom" placeholder="0" step="any" inputmode="decimal" disabled>
       </div>
 
       <div class="result-card">
-        <div style="font-size:12px">MERKEZDEN MERKEZE</div>
-        <span id="center-to-center" style="font-size:24px; font-weight:800">-</span>
+        <div style="font-size:11px">MERKEZDEN MERKEZE</div>
+        <span id="center-to-center" style="font-size:22px; font-weight:800">-</span>
       </div>
       <div class="result-card" style="background:#2ecc71; box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);">
-        <div style="font-size:12px">DIŞTAN DIŞA</div>
-        <span id="outer-distance" style="font-size:24px; font-weight:800">-</span>
+        <div style="font-size:11px">DIŞTAN DIŞA</div>
+        <span id="outer-distance" style="font-size:22px; font-weight:800">-</span>
       </div>
     </form>
   </div>
@@ -525,7 +528,7 @@ document.getElementById('calc-view').addEventListener('click',e=>{
   }
 });
 
-/* ===== MERKEZ HESAP (DEĞİŞTİRİLDİ) ===== */
+/* ===== MERKEZ HESAP ===== */
 function merkezHesap(){
   let tamCap;
   const tamCapChecked=document.querySelector('input[name="tam-cap"]:checked');
@@ -535,12 +538,10 @@ function merkezHesap(){
   } else {
     tamCap=parseFloat(tamCapChecked.value);
   }
-
   const merk=parseFloat(document.getElementById('merkez-olcusu').value);
   document.getElementById('merkez-sonuc').textContent=(isNaN(tamCap)||isNaN(merk))?'-':(merk-tamCap/2).toFixed(2) + " mm";
 }
 
-// Tam Çap radio: seçim değişince hesapla + custom input'u aktif/pasif yap
 document.querySelectorAll('input[name="tam-cap"]').forEach(r=>{
   r.addEventListener('change',function(){
     const customInput=document.getElementById('tam-cap-custom');
@@ -555,13 +556,9 @@ document.querySelectorAll('input[name="tam-cap"]').forEach(r=>{
   });
 });
 
-// Tam Çap custom input
 document.getElementById('tam-cap-custom').oninput=merkezHesap;
-
-// Merkez Ölçüsü input
 document.getElementById('merkez-olcusu').oninput=merkezHesap;
 
-// Merkez SİL butonu
 document.getElementById('merkez-temizle').onclick=()=>{
   document.querySelector('input[name="tam-cap"][value="2.5"]').checked=true;
   document.getElementById('tam-cap-custom').value='';
