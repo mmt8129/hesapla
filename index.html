@@ -10,7 +10,6 @@
 <link rel="icon" href="icon.png" type="image/png">
 <title>Hesap Makinesi – Merkez & Dairesel</title>
 <style>
-/* ---------- TEMA (GÜNDÜZ MODU) ---------- */
 :root {
     --bg: #f5f7fa;
     --card-bg: #ffffff;
@@ -143,11 +142,11 @@ body {
 
 .mode-title { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: column; }
+form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: column; overflow-y: auto; flex: 1; }
 
 .inner-form label { font-weight: 700; font-size: 13px; color: var(--text-main); text-transform: uppercase; }
 
-.inner-form input {
+.inner-form input[type="number"] {
     width: 100%;
     padding: 15px;
     border: 2px solid var(--primary);
@@ -177,6 +176,97 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
     font-weight: 700;
     font-size: 22px;
     box-shadow: 0 3px 0 #357abd;
+}
+
+/* ===== RADIO STYLES (HER İKİ MOD İÇİN ORTAK) ===== */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: background 0.2s;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-main);
+}
+
+.radio-option:hover { background: #f0f0f0; }
+
+.radio-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 3px solid #ccc;
+    display: inline-block;
+    flex-shrink: 0;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+}
+
+.radio-option input[type="radio"] { display: none; }
+
+.radio-option input[type="radio"]:checked ~ .radio-dot {
+    background: var(--accent, #2ecc71);
+    border-color: var(--accent, #2ecc71);
+}
+
+.radio-option input[type="radio"]:checked ~ .radio-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.custom-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.custom-input-wrap input[type="number"] {
+    width: 60px !important;
+    padding: 8px 4px !important;
+    font-size: 16px !important;
+    text-align: center !important;
+    border: 2px solid var(--secondary) !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    background: #f5f5f5 !important;
+    color: var(--text-sub) !important;
+    -moz-appearance: textfield;
+}
+
+.custom-input-wrap input[type="number"]::-webkit-outer-spin-button,
+.custom-input-wrap input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.custom-input-wrap input[type="number"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.custom-input-wrap input[type="number"]:not(:disabled) {
+    background: #fff !important;
+    border-color: var(--primary) !important;
+    color: var(--text-main) !important;
+    opacity: 1;
 }
 </style>
 </head>
@@ -219,6 +309,7 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
     </div>
   </div>
 
+  <!-- ===== MERKEZ VIEW (DEĞİŞTİRİLDİ) ===== -->
   <div id="merkez-view" class="view off-right">
     <div class="mode-header">
         <button class="nav-btn" id="close-merkez"><span style="font-size: 22px;">👈</span></button>
@@ -226,10 +317,49 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
         <button class="nav-btn" id="merkez-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
     </div>
     <form class="inner-form" onsubmit="return false">
-      <label>Tam Çap (mm)</label>
-      <input type="number" id="tam-cap" placeholder="0" step="any" inputmode="decimal">
+
+      <label>Tam Çap</label>
+      <div class="radio-group" style="--accent:#4a90e2;">
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="2.5" checked>
+          <span class="radio-dot"></span> M3
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="3.2">
+          <span class="radio-dot"></span> M4
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="4.2">
+          <span class="radio-dot"></span> M5
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="5">
+          <span class="radio-dot"></span> M6
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="5.2">
+          <span class="radio-dot"></span> 1/4"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="8">
+          <span class="radio-dot"></span> 3/8"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="3.2" data-label="3,2">
+          <span class="radio-dot"></span> 3,2
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="custom">
+          <span class="radio-dot"></span> Özel
+        </label>
+      </div>
+      <div class="custom-input-wrap">
+        <input type="number" id="tam-cap-custom" placeholder="0" step="any" inputmode="decimal" disabled>
+      </div>
+
       <label>Merkez Ölçüsü (mm)</label>
       <input type="number" id="merkez-olcusu" placeholder="0" step="any" inputmode="decimal">
+
       <div class="result-card">
         <div style="font-size:12px; margin-bottom:5px">HESAPLANAN SONUÇ</div>
         <span id="merkez-sonuc" style="font-size:32px; font-weight:800">-</span>
@@ -237,6 +367,7 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
     </form>
   </div>
 
+  <!-- ===== DAİRESEL VIEW ===== -->
   <div id="dairesel-view" class="view off-right">
     <div class="mode-header">
         <button class="nav-btn" id="close-dairesel"><span style="font-size: 22px;">👈</span></button>
@@ -244,12 +375,63 @@ form.inner-form { padding: 20px; gap: 20px; display: flex; flex-direction: colum
         <button class="nav-btn" id="dairesel-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
     </div>
     <form class="inner-form" onsubmit="return false">
+
       <label>Delik Sayısı</label>
-      <input type="number" id="hole-count" placeholder="0" min="2" inputmode="numeric">
+      <div class="radio-group" style="--accent:#2ecc71;">
+        <label class="radio-option">
+          <input type="radio" name="hole-count" value="2" checked>
+          <span class="radio-dot"></span> 2
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-count" value="3">
+          <span class="radio-dot"></span> 3
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-count" value="custom">
+          <span class="radio-dot"></span> Özel
+        </label>
+      </div>
+      <div class="custom-input-wrap">
+        <input type="number" id="hole-count-custom" placeholder="0" min="2" inputmode="numeric" disabled>
+      </div>
+
       <label>Merkezden Uzaklık (R) (mm)</label>
       <input type="number" id="pcd-radius" placeholder="0" step="any" inputmode="decimal">
-      <label>Delik Çapı (mm)</label>
-      <input type="number" id="hole-diameter" placeholder="0" step="any" inputmode="decimal">
+
+      <label>Delik Çapı</label>
+      <div class="radio-group" style="--accent:#4a90e2;">
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="2.5" checked>
+          <span class="radio-dot"></span> M3
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="3.2">
+          <span class="radio-dot"></span> M4
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="4.2">
+          <span class="radio-dot"></span> M5
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="5">
+          <span class="radio-dot"></span> M6
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="5.2">
+          <span class="radio-dot"></span> 1/4"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="8">
+          <span class="radio-dot"></span> 3/8"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="custom">
+          <span class="radio-dot"></span> Özel
+        </label>
+      </div>
+      <div class="custom-input-wrap">
+        <input type="number" id="hole-diam-custom" placeholder="0" step="any" inputmode="decimal" disabled>
+      </div>
 
       <div class="result-card">
         <div style="font-size:12px">MERKEZDEN MERKEZE</div>
@@ -343,31 +525,125 @@ document.getElementById('calc-view').addEventListener('click',e=>{
   }
 });
 
+/* ===== MERKEZ HESAP (DEĞİŞTİRİLDİ) ===== */
 function merkezHesap(){
-  const tam=parseFloat(document.getElementById('tam-cap').value), merk=parseFloat(document.getElementById('merkez-olcusu').value);
-  document.getElementById('merkez-sonuc').textContent=(isNaN(tam)||isNaN(merk))?'-':(merk-tam/2).toFixed(2) + " mm";
+  let tamCap;
+  const tamCapChecked=document.querySelector('input[name="tam-cap"]:checked');
+  if(!tamCapChecked){ tamCap=NaN; }
+  else if(tamCapChecked.value==='custom'){
+    tamCap=parseFloat(document.getElementById('tam-cap-custom').value);
+  } else {
+    tamCap=parseFloat(tamCapChecked.value);
+  }
+
+  const merk=parseFloat(document.getElementById('merkez-olcusu').value);
+  document.getElementById('merkez-sonuc').textContent=(isNaN(tamCap)||isNaN(merk))?'-':(merk-tamCap/2).toFixed(2) + " mm";
 }
-document.getElementById('tam-cap').oninput=merkezHesap;
+
+// Tam Çap radio: seçim değişince hesapla + custom input'u aktif/pasif yap
+document.querySelectorAll('input[name="tam-cap"]').forEach(r=>{
+  r.addEventListener('change',function(){
+    const customInput=document.getElementById('tam-cap-custom');
+    if(this.value==='custom'){
+      customInput.disabled=false;
+      customInput.focus();
+    } else {
+      customInput.disabled=true;
+      customInput.value='';
+    }
+    merkezHesap();
+  });
+});
+
+// Tam Çap custom input
+document.getElementById('tam-cap-custom').oninput=merkezHesap;
+
+// Merkez Ölçüsü input
 document.getElementById('merkez-olcusu').oninput=merkezHesap;
+
+// Merkez SİL butonu
 document.getElementById('merkez-temizle').onclick=()=>{
-  document.getElementById('tam-cap').value=''; document.getElementById('merkez-olcusu').value='';
+  document.querySelector('input[name="tam-cap"][value="2.5"]').checked=true;
+  document.getElementById('tam-cap-custom').value='';
+  document.getElementById('tam-cap-custom').disabled=true;
+  document.getElementById('merkez-olcusu').value='';
   document.getElementById('merkez-sonuc').textContent='-';
 };
 
+/* ===== DAİRESEL HESAP ===== */
 function daireselHesap(){
-  const count=parseFloat(document.getElementById('hole-count').value), radius=parseFloat(document.getElementById('pcd-radius').value), diam=parseFloat(document.getElementById('hole-diameter').value);
+  const radius=parseFloat(document.getElementById('pcd-radius').value);
+
+  let count;
+  const countChecked=document.querySelector('input[name="hole-count"]:checked');
+  if(!countChecked){ count=NaN; }
+  else if(countChecked.value==='custom'){
+    count=parseFloat(document.getElementById('hole-count-custom').value);
+  } else {
+    count=parseFloat(countChecked.value);
+  }
+
+  let diam;
+  const diamChecked=document.querySelector('input[name="hole-diam"]:checked');
+  if(!diamChecked){ diam=NaN; }
+  else if(diamChecked.value==='custom'){
+    diam=parseFloat(document.getElementById('hole-diam-custom').value);
+  } else {
+    diam=parseFloat(diamChecked.value);
+  }
+
   if(isNaN(count)||isNaN(radius)||isNaN(diam)||count<2){
-      document.getElementById('center-to-center').textContent='-';
-      document.getElementById('outer-distance').textContent='-';
-      return;
+    document.getElementById('center-to-center').textContent='-';
+    document.getElementById('outer-distance').textContent='-';
+    return;
   }
   const center2=2*radius*Math.sin((180/count)*(Math.PI/180));
   document.getElementById('center-to-center').textContent=center2.toFixed(2)+' mm';
   document.getElementById('outer-distance').textContent=(center2+diam).toFixed(2)+' mm';
 }
-['hole-count','pcd-radius','hole-diameter'].forEach(id=>document.getElementById(id).oninput=daireselHesap);
+
+document.getElementById('pcd-radius').oninput=daireselHesap;
+
+document.querySelectorAll('input[name="hole-count"]').forEach(r=>{
+  r.addEventListener('change',function(){
+    const customInput=document.getElementById('hole-count-custom');
+    if(this.value==='custom'){
+      customInput.disabled=false;
+      customInput.focus();
+    } else {
+      customInput.disabled=true;
+      customInput.value='';
+    }
+    daireselHesap();
+  });
+});
+
+document.getElementById('hole-count-custom').oninput=daireselHesap;
+
+document.querySelectorAll('input[name="hole-diam"]').forEach(r=>{
+  r.addEventListener('change',function(){
+    const customInput=document.getElementById('hole-diam-custom');
+    if(this.value==='custom'){
+      customInput.disabled=false;
+      customInput.focus();
+    } else {
+      customInput.disabled=true;
+      customInput.value='';
+    }
+    daireselHesap();
+  });
+});
+
+document.getElementById('hole-diam-custom').oninput=daireselHesap;
+
 document.getElementById('dairesel-temizle').onclick=()=>{
-  document.getElementById('hole-count').value=''; document.getElementById('pcd-radius').value=''; document.getElementById('hole-diameter').value='';
+  document.getElementById('pcd-radius').value='';
+  document.querySelector('input[name="hole-count"][value="2"]').checked=true;
+  document.getElementById('hole-count-custom').value='';
+  document.getElementById('hole-count-custom').disabled=true;
+  document.querySelector('input[name="hole-diam"][value="2.5"]').checked=true;
+  document.getElementById('hole-diam-custom').value='';
+  document.getElementById('hole-diam-custom').disabled=true;
   daireselHesap();
 };
 
